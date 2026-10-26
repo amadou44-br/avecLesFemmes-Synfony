@@ -86,6 +86,16 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
+        ],
+        "bereteamadou:db:create": [
+            "@php bin/console doctrine:database:drop --if-exists --force",
+            "@php bin/console doctrine:database:create"
+        ],
+        "bereteamadou:cache:clear": "@php bin/console cache:clear",
+        "bereteamadou:make:entity": "@php bin/console make:entity",
+        "bereteamadou:migration": [
+            "@php bin/console make:migration --no-interaction",
+            "@php bin/console doctrine:migrations:migrate --no-interaction"
         ]
     },
     "conflict": {
