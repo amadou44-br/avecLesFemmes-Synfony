@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Groupements{% endblock %}
+
+{% block body %}
+<h1>Groupements</h1>
+<p>{{ groupements|length }} groupement(s)</p>
+
+<table border="1" cellpadding="8" cellspacing="0">
+    <thead>
+        <tr>
+            <th>Groupement</th>
+            <th>Téléphone</th>
+            <th>Exercice en cours</th>
+            <th>Exercices</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for groupement in groupements %}
+        {% set enCours = groupement.exercicesEnCours|first %}
+        <tr>
+            <td><strong>{{ groupement.nom }}</strong><br>{{ groupement.adresse }}</td>
+            <td>{{ groupement.tel }}</td>
+            <td>
+                {% if enCours %}
+                    {{ enCours.statut.label }} depuis le {{ enCours.debutAt|format_date('long') }}
+                {% else %}
+                    Aucun exercice en cours
+                {% endif %}
+            </td>
+            <td>{{ groupement.exercices|length }}</td>
+            <td><a href="{{ path('app_groupement_show', {id: groupement.id}) }}">Voir la fiche</a></td>
+        </tr>
+    {% else %}
+        <tr><td colspan="5">Aucun groupement.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
