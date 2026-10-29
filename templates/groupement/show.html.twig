@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ groupement.nom }}{% endblock %}
+
+{% block body %}
+<p><a href="{{ path('app_groupement') }}">← Tous les groupements</a></p>
+
+<h1>{{ groupement.nom }}</h1>
+<p>Téléphone : {{ groupement.tel }} · Adresse : {{ groupement.adresse }}</p>
+
+<h2>Exercices en cours</h2>
+
+{% if exercicesEnCours|length > 0 %}
+<table border="1" cellpadding="8" cellspacing="0">
+    <thead>
+        <tr>
+            <th>Début</th>
+            <th>Date limite des prêts</th>
+            <th>Fin</th>
+            <th>Rétribution</th>
+            <th>Statut</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for exercice in exercicesEnCours %}
+        <tr>
+            <td>{{ exercice.debutAt|format_date('long') }}</td>
+            <td>{{ exercice.limitePretsAt ? exercice.limitePretsAt|format_date('long') : '—' }}</td>
+            <td>{{ exercice.finAt ? exercice.finAt|format_date('long') : '—' }}</td>
+            <td>{{ exercice.retributionAt ? exercice.retributionAt|format_date('long') : '—' }}</td>
+            <td>{{ exercice.statut.label }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>Aucun exercice en cours pour ce groupement.</p>
+{% endif %}
+{% endblock %}
