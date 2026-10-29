@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\TypeCampagneRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TypeCampagneRepository::class)]
@@ -13,23 +15,39 @@ class TypeCampagne
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 100)]
     private ?string $nom = null;
 
-    public function getId(): ?int
+    /** @var Collection<int, Campagne> */
+    #[ORM\OneToMany(targetEntity: Campagne::class, mappedBy: 'typeCampagne')]
+    private Collection $campagnes;
+
+    public function __construct()
     {
-        return $this->id;
+        $this->campagnes = new ArrayCollection();
     }
 
-    public function getNom(): ?string
+    public function getId(): ?int { return $this->id; }
+    public function getNom(): ?string { return $this->nom; }
+    public function setNom(string $nom): static { $this->nom = $nom; return $this; }
+
+    /** @return Collection<int, Campagne> */
+    public function getCampagnes(): Collection { return $this->campagnes; }
+
+    public function addCampagne(Campagne $campagne): static
     {
-        return $this->nom;
+        if (!$this->campagnes->contains($campagne)) {
+            $this->campagnes->add($campagne);
+            $campagne->setTypeCampagne($this);
+        }
+        return $this;
     }
 
-    public function setNom(string $nom): static
+    public function removeCampagne(Campagne $campagne): static
     {
-        $this->nom = $nom;
-
+        if ($this->campagnes->removeElement($campagne) && $campagne->getTypeCampagne() === $this) {
+            $campagne->setTypeCampagne(null);
+        }
         return $this;
     }
 }
